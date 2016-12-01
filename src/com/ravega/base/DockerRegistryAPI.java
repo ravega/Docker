@@ -1,4 +1,6 @@
-package com.ravega.util;
+package com.ravega.base;
+
+import com.ravega.util.DockerRegistryUtil;
 
 public class DockerRegistryAPI {
 

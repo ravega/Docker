@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import com.ravega.http.HttpConnection;
-import com.ravega.util.DockerRegistryAPI;
 import com.ravega.util.DockerRegistryUtil;
 
 public class DockerRegistry {
