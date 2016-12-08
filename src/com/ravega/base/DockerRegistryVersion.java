@@ -17,7 +17,7 @@ public class DockerRegistryVersion
         String result = HttpConnection.httpGetRequest(
                 dockerRegistry.getTargetURL(),
                 DockerRegistryCmdBase.DOCKER_REGISTRY_VERSION);
-        if (result != null) return DockerRegistryCmdBase.DOCKER_REGISTRY_VERSION;
+        if (result != null && !result.isEmpty()) return DockerRegistryCmdBase.DOCKER_REGISTRY_VERSION;
         
         return "Only Docker Registry API Version 2 is supported";
     }

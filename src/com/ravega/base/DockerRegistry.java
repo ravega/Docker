@@ -15,9 +15,9 @@ import com.ravega.util.DockerRegistryUtil;
 
 public class DockerRegistry {
 	
-	public static final String DOCKER_REGISTRY_PROTOCOL = "http";
-	private String host = "localhost";
-	private int port = 5000;
+    public static final String DOCKER_REGISTRY_PROTOCOL = "http";
+    private String host = "localhost";
+    private int port = 5000;
     
     public DockerRegistry() {
     }
@@ -34,7 +34,7 @@ public class DockerRegistry {
                 this.port);
     }
 	
-	public String getHost() {
+    public String getHost() {
         return host;
     }
 
