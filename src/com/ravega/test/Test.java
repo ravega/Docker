@@ -12,11 +12,11 @@ import java.util.List;
 
 public class Test {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-	    /*
-	     * Test commands
-	     */
+        /*
+         * Test commands
+         */
         System.out.println("Testing Docker Registry Commands...");
         System.out.println("[REGISTRY SUPPORTED VERSION] " + new DockerRegistrySupportedVersion(new DockerRegistry()).send());
         System.out.println("[DOCKER REGISTRY VERSION] " + new DockerRegistryVersion(new DockerRegistry()).send());
