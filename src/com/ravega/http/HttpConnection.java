@@ -7,8 +7,10 @@ import java.net.URL;
 
 public class HttpConnection {
 	
-	public static final String HTTP_METHOD_GET = "GET";
-	public static final String HTTP_METHOD_POST = "POST";
+	private static final String HTTP_METHOD_GET = "GET";
+	private static final String HTTP_METHOD_POST = "POST";
+	
+	private HttpConnection() {}
 	
 	public static String httpGetRequest(URL targetURL, String urlParameters) {
         HttpURLConnection connection = null;
@@ -20,8 +22,7 @@ public class HttpConnection {
 	        connection = (HttpURLConnection) url.openConnection();
 	        connection.setRequestMethod(HttpConnection.HTTP_METHOD_GET);
 	        connection.setUseCaches(false);
-	        connection.setDoOutput(true);
-	     
+	        
 	        connection.getResponseCode();
 	    
 	        BufferedReader in = new BufferedReader (
@@ -38,7 +39,7 @@ public class HttpConnection {
 	    
 	    } catch (Exception e) {
 	        e.printStackTrace();
-	        return null;
+	        return "";
         } finally {
 	      if (connection != null) {
 	          connection.disconnect();

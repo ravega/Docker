@@ -2,13 +2,15 @@ package com.ravega.base;
 
 import java.lang.String;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import com.ravega.http.HttpConnection;
+import com.ravega.exception.DRImageDoesNotExistException;
 import com.ravega.util.DockerRegistryUtil;
 
 public class DockerRegistry {
@@ -16,41 +18,44 @@ public class DockerRegistry {
 	public static final String DOCKER_REGISTRY_PROTOCOL = "http";
 	private String host = "localhost";
 	private int port = 5000;
-	private URL targetURL;
-	
-	public DockerRegistry() {
-		targetURL = DockerRegistryUtil.getURL(
-				DockerRegistry.DOCKER_REGISTRY_PROTOCOL,
-				this.host,
-				this.port);
-	}
-	
-	public DockerRegistry(String host, int port) {
-		this.host = host;
-		this.port = port;
-		targetURL = DockerRegistryUtil.getURL(
-				DockerRegistry.DOCKER_REGISTRY_PROTOCOL,
-				this.host,
-				this.port);
-	}
+    
+    public DockerRegistry() {
+    }
+    
+    public DockerRegistry(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
 
-	/*
-	 * List all the registry repositories.
-	 */
-    public String listRepositories() {
-    	// GET /v2/_catalog
-    	String result = HttpConnection.httpGetRequest(
-    			targetURL,
-    			DockerRegistryAPI.drListRepositories());
-		
-        return result;	
+    public URL getTargetURL() {
+        return DockerRegistryUtil.getURL(
+                DockerRegistry.DOCKER_REGISTRY_PROTOCOL,
+                this.host,
+                this.port);
+    }
+	
+	public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 
     /*
-     * Check for the number of repositories in the registry.
+     * List all the current repositories in the registry
      */
-    public int listNumberOfRepositories() {
-        String jsonStr = this.listRepositories();
+    public List<String> listRepositories() {
+        List<String> list = new ArrayList<String>();
+        String jsonStr = new DockerRegistryListRepositories(this).send();
         JSONTokener jtokener = null;
         JSONObject jObject = null;
         JSONArray repos = null;
@@ -58,54 +63,68 @@ public class DockerRegistry {
             jtokener = new JSONTokener(jsonStr);
             jObject = (JSONObject)jtokener.nextValue();
             repos = jObject.getJSONArray("repositories");
+            for (int i=0; i<repos.length(); i++) {
+                list.add(repos.getString(i));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
-            return 0;
         }
         
-        return repos.length();
+        return list;
     }
     
     /*
-     * For a given repository image, return all its tags.
+     * List the tags for a given repository
      */
-    public String listImageTags(String repository) {
-    	// GET /v2/<repository>/tags/list
-    	String result = HttpConnection.httpGetRequest(
-    			targetURL,
-    			DockerRegistryAPI.drListImageTags(repository));
-		
-    	return result;
-    }
-
-    public String pullImage(String image) {
-    	return "";
-    }
-
-    public String pushImage(String image) {
-    	return "";
-    }
-    
-    public String deleteImage(String image) {
-    	return "";
+    public List<String> listImageTags(String repo) {
+        List<String> listRepositories = this.listRepositories();
+        try {
+            if (!listRepositories.contains(repo)) {
+                throw new DRImageDoesNotExistException("Image " + repo + " not found in Registry.");
+            } else {
+                List<String> list = new ArrayList<String>();
+                String jsonStr = new DockerRegistryImageTags(this, repo).send();
+                JSONTokener jtokener = null;
+                JSONObject jObject = null;
+                JSONArray repos = null;
+                try {
+                    jtokener = new JSONTokener(jsonStr);
+                    jObject = (JSONObject)jtokener.nextValue();
+                    repos = jObject.getJSONArray("tags");
+                    for (int i=0; i<repos.length(); i++) {
+                        list.add(repos.getString(i));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                
+                return list;
+            }
+        } catch (DRImageDoesNotExistException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return new ArrayList<String>();
     }
     
     /*
-     * Check for the Library supported version.
+     * Returns the version supported by the library.
      */
     public String getSupportedVersion() {
-    	return DockerRegistryAPI.DOCKER_REGISTRY_VERSION;
+        return new DockerRegistrySupportedVersion(this).send();
     }
     
     /*
-     * Check for the Registry version.
+     * Returns the supported version for the registry.
      */
     public String getRegistryVersion() {
-    	String result = HttpConnection.httpGetRequest(
-    			targetURL,
-    			DockerRegistryAPI.drVersion());
-    	if (result != null) return getSupportedVersion();
-    	
-		return "Only Docker Registry API Version 2 is supported";
+        return new DockerRegistryVersion(this).send();
     }
+    
+    public int getNumberOfRepositories() {
+        List<String> list = this.listRepositories();
+        return list.size();
+    }
+    
+
 }

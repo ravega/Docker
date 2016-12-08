@@ -22,7 +22,7 @@ public class TestJUnitListImages {
      */
     @Test
     public void testListNumberOfImages() {
-        assertEquals(dockerRegistry.listNumberOfRepositories(), 3);     
+        assertEquals(dockerRegistry.getNumberOfRepositories(), 3);     
     }
     
     /*
@@ -30,6 +30,6 @@ public class TestJUnitListImages {
      */
     @Test
     public void testListNumberOfImagesWrong() {
-        assertNotEquals(dockerRegistry.listNumberOfRepositories(), 0);     
+        assertNotEquals(dockerRegistry.getNumberOfRepositories(), 0);     
     }
 }

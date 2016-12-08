@@ -22,8 +22,6 @@ public class TestJUnitVersions {
      */
     @Test
     public void testCheckRegistryV2Version() {
-        //String version = dockerRegistry.getRegistryVersion();
-        //System.out.println(version);
         assertEquals(dockerRegistry.getRegistryVersion(), "v2");     
     }
    
@@ -32,8 +30,6 @@ public class TestJUnitVersions {
      */
     @Test
     public void testCheckSupportedV2Version() {
-        //String version = dockerRegistry.getSupportedVersion();
-        //System.out.println(version);
         assertEquals(dockerRegistry.getSupportedVersion(), "v2");     
     }
 }
