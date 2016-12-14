@@ -1,6 +1,7 @@
 package com.ravega.base;
 
-public abstract class DockerRegistryCmdBase {
+public abstract class DockerRegistryCmdBase
+    implements DockerRegistryCommand {
 
     public static final String DOCKER_REGISTRY_VERSION = "v2";
     
@@ -9,6 +10,5 @@ public abstract class DockerRegistryCmdBase {
     public DockerRegistryCmdBase(DockerRegistry dockerRegistry) {
         this.dockerRegistry = dockerRegistry;
     }
-    
-    protected abstract String send();
+
 }
